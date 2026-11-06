@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout (~{::title}, ~{::#page-content}, ~{::#page-scripts})}">
+<head>
+  <title th:text="${'Edit ' + listing.title + ' - ReWear'}">Edit Listing - ReWear</title>
+</head>
+<body>
+
+<div id="page-content" class="container" style="padding-top: 2.5rem; padding-bottom: 4rem; max-width: 820px;">
+
+  <div style="margin-bottom: 2rem;">
+    <span class="badge badge-green" style="margin-bottom: 0.5rem;">Update Clothing</span>
+    <h1 style="font-size: 2.2rem; color: #064E3B;">Edit Listing Details</h1>
+  </div>
+
+  <div style="background: white; border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 2.25rem; box-shadow: var(--shadow-md);">
+    <form th:action="@{/listings/{id}/edit(id=${listing.id})}" method="POST" enctype="multipart/form-data">
+      
+      <!-- Current & New Image -->
+      <div class="form-group" style="margin-bottom: 2rem;">
+        <label class="form-label">Garment Photo</label>
+        <div style="display: flex; gap: 1.5rem; align-items: center; margin-bottom: 1rem;">
+          <img th:src="${listing.imageUrl}" alt="Current image" style="width: 100px; height: 100px; object-fit: cover; border-radius: var(--radius-md); border: 1px solid var(--border);">
+          <div>
+            <div style="font-weight: 600; font-size: 0.92rem;">Replace Photo (Optional)</div>
+            <input type="file" name="image_file" id="image-upload" accept="image/*" class="form-input" style="margin-top: 0.5rem;">
+          </div>
+        </div>
+        <div>
+          <label class="form-label" style="font-size: 0.82rem; color: var(--text-muted);">Or update image URL:</label>
+          <input type="url" name="image_url" class="form-input" th:value="${listing.imageUrl}">
+        </div>
+      </div>
+
+      <!-- Item Title -->
+      <div class="form-group" style="margin-bottom: 1.5rem;">
+        <label class="form-label">Title / Garment Name *</label>
+        <input type="text" name="title" class="form-input" th:value="${listing.title}" required>
+      </div>
+
+      <!-- Category & Size Grid -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.5rem;">
+        <div class="form-group">
+          <label class="form-label">Category *</label>
+          <select name="category" class="form-select" required>
+            <option value="Women" th:selected="${listing.category == 'Women'}">Women's Fashion</option>
+            <option value="Men" th:selected="${listing.category == 'Men'}">Men's Fashion</option>
+            <option value="Kids" th:selected="${listing.category == 'Kids'}">Kids &amp; Youth</option>
+            <option value="Unisex" th:selected="${listing.category == 'Unisex'}">Unisex</option>
+            <option value="Outerwear" th:selected="${listing.category == 'Outerwear'}">Outerwear &amp; Jackets</option>
+            <option value="Footwear" th:selected="${listing.category == 'Footwear'}">Footwear &amp; Shoes</option>
+            <option value="Accessories" th:selected="${listing.category == 'Accessories'}">Bags &amp; Accessories</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Size *</label>
+          <input type="text" name="size" class="form-input" th:value="${listing.size}" required>
+        </div>
+      </div>
+
+      <!-- Condition, Listing Type & Status Grid -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem; margin-bottom: 1.5rem;">
+        <div class="form-group">
+          <label class="form-label">Condition *</label>
+          <select name="condition" class="form-select" required>
+            <option value="New with tags" th:selected="${listing.condition == 'New with tags'}">New with tags</option>
+            <option value="Like New" th:selected="${listing.condition == 'Like New'}">Like New</option>
+            <option value="Gently Used" th:selected="${listing.condition == 'Gently Used'}">Gently Used</option>
+            <option value="Well Worn" th:selected="${listing.condition == 'Well Worn'}">Well Worn</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Listing Model *</label>
+          <select name="listing_type" class="form-select" required>
+            <option value="Both" th:selected="${listing.listingType == 'Both'}">Both (Exchange or Donation)</option>
+            <option value="Exchange" th:selected="${listing.listingType == 'Exchange'}">Exchange Only</option>
+            <option value="Donation" th:selected="${listing.listingType == 'Donation'}">Free Donation</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Status *</label>
+          <select name="status" class="form-select" required>
+            <option value="Available" th:selected="${listing.status == 'Available'}">Available</option>
+            <option value="Pending" th:selected="${listing.status == 'Pending'}">Pending Request</option>
+            <option value="Exchanged" th:selected="${listing.status == 'Exchanged'}">Exchanged (Completed)</option>
+            <option value="Donated" th:selected="${listing.status == 'Donated'}">Donated (Completed)</option>
+            <option value="Inactive" th:selected="${listing.status == 'Inactive'}">Inactive / Hidden</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Brand, Color, Material -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem; margin-bottom: 1.5rem;">
+        <div class="form-group">
+          <label class="form-label">Brand</label>
+          <input type="text" name="brand" class="form-input" th:value="${listing.brand}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Color</label>
+          <input type="text" name="color" class="form-input" th:value="${listing.color}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Material / Fabric</label>
+          <input type="text" name="material" class="form-input" th:value="${listing.material}">
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="form-group" style="margin-bottom: 2rem;">
+        <label class="form-label">Description *</label>
+        <textarea name="description" class="form-textarea" rows="4" required th:text="${listing.description}">Description</textarea>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+        <a th:href="@{/listings/{id}(id=${listing.id})}" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary btn-lg">
+          Save Changes
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+</div>
+
+<div id="page-scripts"></div>
+
+</body>
+</html>

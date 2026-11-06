@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout (~{::title}, ~{::#page-content}, ~{::#page-scripts})}">
+<head>
+  <title>Administrator Dashboard - ReWear</title>
+</head>
+<body>
+
+<div id="page-content">
+
+  <div class="dashboard-header" style="background: #064E3B; color: white;">
+    <div class="container">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <span class="badge badge-amber" style="margin-bottom: 0.5rem;">System Administration</span>
+          <h1 style="font-size: 2.2rem; color: white; margin-bottom: 0.35rem;">Community Moderation &amp; Admin</h1>
+          <p style="color: #A7F3D0; font-size: 0.95rem; margin: 0;">
+            Monitor platform metrics, curate circular listings, review user reports, and maintain platform integrity.
+          </p>
+        </div>
+
+        <div>
+          <span class="badge badge-green" style="font-size: 0.85rem; padding: 0.4rem 0.85rem;">Platform Online</span>
+        </div>
+      </div>
+
+      <!-- Administrative Metrics Overview -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.25rem; margin-top: 2rem;">
+        <div style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: var(--radius-lg); padding: 1.25rem;">
+          <div style="font-size: 0.78rem; text-transform: uppercase; color: #A7F3D0; font-weight: 600;">Registered Members</div>
+          <div style="font-size: 2.2rem; font-weight: 800; font-family: 'Outfit', sans-serif; color: white;" th:text="${totalUsers}">4</div>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: var(--radius-lg); padding: 1.25rem;">
+          <div style="font-size: 0.78rem; text-transform: uppercase; color: #A7F3D0; font-weight: 600;">Total Listings</div>
+          <div style="font-size: 2.2rem; font-weight: 800; font-family: 'Outfit', sans-serif; color: white;" th:text="${totalListings}">11</div>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: var(--radius-lg); padding: 1.25rem;">
+          <div style="font-size: 0.78rem; text-transform: uppercase; color: #A7F3D0; font-weight: 600;">Completed Handovers</div>
+          <div style="font-size: 2.2rem; font-weight: 800; font-family: 'Outfit', sans-serif; color: white;" th:text="${completedExchanges}">1</div>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: var(--radius-lg); padding: 1.25rem;">
+          <div style="font-size: 0.78rem; text-transform: uppercase; color: #A7F3D0; font-weight: 600;">Pending Reports</div>
+          <div style="font-size: 2.2rem; font-weight: 800; font-family: 'Outfit', sans-serif;" th:styleappend="${pendingReports > 0 ? 'color: #F87171;' : 'color: #34D399;'}" th:text="${pendingReports}">
+            1
+          </div>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: var(--radius-lg); padding: 1.25rem;">
+          <div style="font-size: 0.78rem; text-transform: uppercase; color: #A7F3D0; font-weight: 600;">Textile Saved</div>
+          <div style="font-size: 2.2rem; font-weight: 800; font-family: 'Outfit', sans-serif; color: #34D399;" th:text="${totalTextileSaved + ' kg'}">
+            0.8 kg
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container" style="padding-bottom: 5rem;">
+
+    <!-- Admin Tabs -->
+    <div class="tabs-nav" data-tabs>
+      <button class="tab-btn active" data-target="admin-tab-reports">
+        <span>🚩</span> Reported Content (<span th:text="${#lists.size(reports)}">1</span>)
+      </button>
+      <button class="tab-btn" data-target="admin-tab-listings">
+        <span>👗</span> All Listings (<span th:text="${#lists.size(allListings)}">11</span>)
+      </button>
+      <button class="tab-btn" data-target="admin-tab-users">
+        <span>👥</span> User Accounts (<span th:text="${#lists.size(users)}">4</span>)
+      </button>
+    </div>
+
+    <!-- TAB 1: Reported Content -->
+    <div class="tab-pane active" id="admin-tab-reports">
+      <div th:if="${not #lists.isEmpty(reports)}" class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Report ID</th>
+              <th>Flagged Garment</th>
+              <th>Reporter</th>
+              <th>Reason</th>
+              <th>Details</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="rep : ${reports}">
+              <td><strong th:text="'#' + ${rep.id}">#1</strong></td>
+              <td>
+                <div style="display: flex; gap: 0.75rem; align-items: center;">
+                  <img th:src="${rep.listing.imageUrl}" alt="" style="width: 40px; height: 40px; border-radius: 6px; object-fit: cover;">
+                  <div>
+                    <a th:href="@{/listings/{id}(id=${rep.listing.id})}" target="_blank" style="font-weight: 600; color: var(--text-main);" th:text="${rep.listing.title}">
+                      Listing Title
+                    </a>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);" th:text="'By ' + ${rep.listing.owner.name}">By Owner</div>
+                  </div>
+                </div>
+              </td>
+              <td th:text="${rep.reporter.name}">Reporter</td>
+              <td>
+                <span class="badge badge-red" th:text="${rep.reason}">Reason</span>
+              </td>
+              <td style="max-width: 250px; font-size: 0.85rem;" th:text="${rep.details != null and !rep.details.isEmpty() ? rep.details : 'No comments provided'}">Details</td>
+              <td>
+                <span class="badge" th:classappend="${rep.status == 'Pending' ? 'badge-amber' : 'badge-gray'}" th:text="${rep.status}">Pending</span>
+              </td>
+              <td th:text="${#temporals.format(rep.createdAt, 'MMM dd, yyyy')}">Date</td>
+              <td>
+                <div style="display: flex; gap: 0.5rem;">
+                  <!-- Dismiss -->
+                  <form th:if="${rep.status == 'Pending'}" th:action="@{/admin/reports/{id}/dismiss(id=${rep.id})}" method="POST">
+                    <button type="submit" class="btn btn-secondary btn-sm" title="Dismiss report as invalid">Dismiss</button>
+                  </form>
+                  <!-- Delete item -->
+                  <form th:action="@{/admin/listings/{id}/delete(id=${rep.listing.id})}" method="POST" onsubmit="return confirm('Remove this listing from the platform?');">
+                    <button type="submit" class="btn btn-danger btn-sm" title="Remove violating listing">Delete Item</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div th:if="${#lists.isEmpty(reports)}" style="text-align: center; padding: 4rem 1rem; background: white; border-radius: var(--radius-lg); border: 1px solid var(--border);">
+        <div style="font-size: 3rem; margin-bottom: 0.75rem;">🛡️</div>
+        <h3 style="font-size: 1.35rem; color: #064E3B; margin-bottom: 0.5rem;">No Pending Reports</h3>
+        <p style="color: var(--text-muted); font-size: 0.92rem;">The community wardrobe is clean and compliant with circular fashion standards.</p>
+      </div>
+    </div>
+
+    <!-- TAB 2: All Listings -->
+    <div class="tab-pane" id="admin-tab-listings">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Item</th>
+              <th>Owner</th>
+              <th>Category</th>
+              <th>Type</th>
+              <th>Status</th>
+              <th>Listed Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="item : ${allListings}">
+              <td th:text="'#' + ${item.id}">#1</td>
+              <td>
+                <div style="display: flex; gap: 0.75rem; align-items: center;">
+                  <img th:src="${item.imageUrl}" alt="" style="width: 36px; height: 36px; border-radius: 4px; object-fit: cover;">
+                  <a th:href="@{/listings/{id}(id=${item.id})}" target="_blank" style="font-weight: 600; color: var(--text-main);" th:text="${item.title}">
+                    Title
+                  </a>
+                </div>
+              </td>
+              <td th:text="${item.owner.name}">Owner</td>
+              <td th:text="${item.category + ' (' + item.size + ')'}">Men (L)</td>
+              <td>
+                <span class="badge" th:classappend="${item.listingType == 'Donation' ? 'badge-amber' : 'badge-blue'}" th:text="${item.listingType}">
+                  Exchange
+                </span>
+              </td>
+              <td>
+                <span class="badge" th:classappend="${item.status == 'Available' ? 'badge-green' : (item.status == 'Pending' ? 'badge-amber' : 'badge-gray')}" th:text="${item.status}">
+                  Available
+                </span>
+              </td>
+              <td th:text="${#temporals.format(item.createdAt, 'yyyy-MM-dd')}">2026-10-30</td>
+              <td>
+                <div style="display: flex; gap: 0.4rem;">
+                  <a th:href="@{/listings/{id}/edit(id=${item.id})}" class="btn btn-secondary btn-sm" target="_blank">Edit</a>
+                  <form th:action="@{/admin/listings/{id}/delete(id=${item.id})}" method="POST" onsubmit="return confirm('Admin delete this listing?');" style="display: inline;">
+                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB 3: User Accounts -->
+    <div class="tab-pane" id="admin-tab-users">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>User ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Location</th>
+              <th>Listings</th>
+              <th>Completed</th>
+              <th>Role</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="usr : ${users}">
+              <td th:text="'#' + ${usr.id}">#1</td>
+              <td><strong th:text="${usr.name}">User</strong></td>
+              <td th:text="${usr.email}">email@example.com</td>
+              <td th:text="${usr.location != null ? usr.location : 'Community'}">Location</td>
+              <td th:text="${usr.totalItemsListed}">0</td>
+              <td th:text="${usr.completedCount}">0</td>
+              <td>
+                <span th:if="${usr.isAdmin()}" class="badge badge-amber">Admin</span>
+                <span th:unless="${usr.isAdmin()}" class="badge badge-gray">User</span>
+              </td>
+              <td>
+                <span th:if="${usr.isActive()}" class="badge badge-green">Active</span>
+                <span th:unless="${usr.isActive()}" class="badge badge-red">Suspended</span>
+              </td>
+              <td>
+                <form th:action="@{/admin/users/{id}/toggle(id=${usr.id})}" method="POST" style="display:inline;">
+                  <button th:if="${usr.isActive()}" type="submit" class="btn btn-danger btn-sm" th:disabled="${usr.id == currentUser.id}" th:title="${usr.id == currentUser.id ? 'Cannot suspend yourself' : 'Suspend account'}">
+                    Suspend
+                  </button>
+                  <button th:unless="${usr.isActive()}" type="submit" class="btn btn-primary btn-sm">
+                    Activate
+                  </button>
+                </form>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<div id="page-scripts"></div>
+
+</body>
+</html>

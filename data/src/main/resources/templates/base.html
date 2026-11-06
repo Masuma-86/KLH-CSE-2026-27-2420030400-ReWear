@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:fragment="layout (title, content, extra_scripts)">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:replace="${title}">ReWear - Circular Fashion &amp; Clothing Exchange</title>
+  <meta name="description" content="ReWear is a community platform for exchanging, donating, and reusing pre-owned clothing to reduce textile waste and encourage sustainable fashion.">
+  
+  <!-- CSS Styles -->
+  <link rel="stylesheet" th:href="@{/static/css/style.css}">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌱</text></svg>">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="container nav-container">
+      <a th:href="@{/}" class="brand-logo" id="nav-brand-logo">
+        <div class="brand-icon">🌱</div>
+        <span>Re<span class="brand-highlight">Wear</span></span>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a th:href="@{/}" class="nav-link" th:classappend="${currentUri == '/' ? 'active' : ''}">Home</a></li>
+          <li><a th:href="@{/listings}" class="nav-link" th:classappend="${currentUri != null and currentUri.startsWith('/listings') ? 'active' : ''}">Explore Wardrobe</a></li>
+          <li><a th:href="@{/donations}" class="nav-link" th:classappend="${currentUri == '/donations' ? 'active' : ''}">Free Donations</a></li>
+          <li><a th:href="@{/impact}" class="nav-link" th:classappend="${currentUri == '/impact' ? 'active' : ''}">Sustainability Hub</a></li>
+          <li th:if="${currentUser != null and currentUser.isAdmin()}">
+            <a th:href="@{/admin}" class="nav-link" th:classappend="${currentUri == '/admin' ? 'active' : ''}" style="color: #F59E0B; font-weight: 700;">★ Admin</a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <th:block th:if="${currentUser != null}">
+          <a th:href="@{/listings/create}" class="btn btn-primary btn-sm" id="nav-list-item-btn">
+            <span>+</span> List Clothing
+          </a>
+          <a th:href="@{/dashboard}" class="btn btn-secondary btn-sm" id="nav-dashboard-btn">
+            <span class="avatar-sm" style="width: 1.5rem; height: 1.5rem; font-size: 0.7rem;" th:text="${currentUser.name.substring(0, 1)}">U</span>
+            <span>Dashboard</span>
+          </a>
+          <a th:href="@{/logout}" class="btn btn-outline btn-sm" id="nav-logout-btn" title="Sign Out">
+            Logout
+          </a>
+        </th:block>
+        <th:block th:unless="${currentUser != null}">
+          <a th:href="@{/login}" class="btn btn-outline btn-sm" id="nav-login-btn">Log In</a>
+          <a th:href="@{/register}" class="btn btn-primary btn-sm" id="nav-register-btn">Join ReWear</a>
+        </th:block>
+      </div>
+    </div>
+  </header>
+
+  <!-- Flash Messages / Toasts -->
+  <div class="toast-container" th:if="${flashMessage != null}">
+    <div th:class="'toast toast-' + ${flashCategory != null ? flashCategory : 'info'}">
+      <span th:text="${flashCategory == 'success' ? '🌱' : (flashCategory == 'danger' ? '⚠️' : 'ℹ️')}">🌱</span>
+      <div style="flex-grow: 1; font-size: 0.9rem;" th:text="${flashMessage}">Flash Notification</div>
+      <button style="background:none; border:none; cursor:pointer; font-size:1.1rem; color:#94A3B8;" onclick="this.parentElement.remove()">✕</button>
+    </div>
+  </div>
+
+  <!-- Main Content Body -->
+  <main style="flex: 1;" th:insert="${content}"></main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="brand-logo" style="color: white;">
+            <div class="brand-icon">🌱</div>
+            <span>Re<span style="color: #34D399;">Wear</span></span>
+          </div>
+          <p style="color: #94A3B8; font-size: 0.92rem; max-width: 320px;">
+            A circular digital marketplace connecting communities to swap, donate, and cherish pre-owned clothing, turning textile waste into community value.
+          </p>
+          <div style="display: flex; gap: 0.75rem; margin-top: 0.5rem;">
+            <span class="badge badge-green">100% Sustainable</span>
+            <span class="badge badge-amber">Zero Textile Waste</span>
+          </div>
+        </div>
+
+        <div>
+          <h4 style="color: white; font-size: 1.05rem; margin-bottom: 1rem;">Explore</h4>
+          <ul class="footer-links">
+            <li><a th:href="@{/listings}">All Clothing</a></li>
+            <li><a th:href="@{/donations}">Free Donations</a></li>
+            <li><a th:href="@{/listings(category='Men')}">Men's Collection</a></li>
+            <li><a th:href="@{/listings(category='Women')}">Women's Collection</a></li>
+            <li><a th:href="@{/listings(category='Kids')}">Kids &amp; Family</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 style="color: white; font-size: 1.05rem; margin-bottom: 1rem;">Sustainability</h4>
+          <ul class="footer-links">
+            <li><a th:href="@{/impact}">Eco-Impact Calculator</a></li>
+            <li><a th:href="@{/impact#care-guide}">Garment Care Tips</a></li>
+            <li><a th:href="@{/impact#textile-facts}">Textile Waste Facts</a></li>
+            <li><a th:href="@{/impact#circular-economy}">Circular Economy Guide</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 style="color: white; font-size: 1.05rem; margin-bottom: 1rem;">Community</h4>
+          <ul class="footer-links">
+            <th:block th:if="${currentUser != null}">
+              <li><a th:href="@{/dashboard}">My Dashboard</a></li>
+              <li><a th:href="@{/listings/create}">Upload Clothing</a></li>
+            </th:block>
+            <th:block th:unless="${currentUser != null}">
+              <li><a th:href="@{/login}">Sign In</a></li>
+              <li><a th:href="@{/register}">Create Account</a></li>
+            </th:block>
+            <li><a th:href="@{/impact}">Responsible Consumption</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2026 ReWear Platform. Dedicated to circular fashion and textile waste reduction. (Spring Boot &amp; Java 21)</div>
+        <div style="display: flex; gap: 1.5rem;">
+          <span>Green Community</span>
+          <span>Open Source</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Core JavaScript -->
+  <script th:src="@{/static/js/main.js}"></script>
+  <th:block th:if="${extra_scripts != null}" th:insert="${extra_scripts}"></th:block>
+</body>
+</html>
