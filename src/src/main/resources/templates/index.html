@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout (~{::title}, ~{::#page-content}, ~{::#page-scripts})}">
+<head>
+  <title>ReWear - Sustainable Fashion, Clothing Exchange &amp; Free Donations</title>
+</head>
+<body>
+
+<div id="page-content">
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-grid">
+        <div class="hero-content">
+          <div class="hero-tag">
+            <span>🌿</span> Circular Fashion Movement
+          </div>
+          <h1 class="hero-title">
+            Exchange, Donate &amp; <span class="hero-gradient">ReWear</span> Pre-Owned Fashion
+          </h1>
+          <p class="hero-desc">
+            Combat textile waste and give clothing a second life. Trade quality garments with your community, discover free clothing donations, and track your tangible environmental footprint.
+          </p>
+
+          <div class="hero-actions">
+            <a th:href="@{/listings}" class="btn btn-primary btn-lg" id="hero-browse-btn">
+              Explore Wardrobe ➔
+            </a>
+            <a th:href="@{/donations}" class="btn btn-secondary btn-lg" id="hero-donations-btn">
+              Free Donations 🎁
+            </a>
+            <a th:href="@{/listings/create}" class="btn btn-outline btn-lg" id="hero-upload-btn">
+              + Give Clothing
+            </a>
+          </div>
+
+          <div class="hero-stats">
+            <div class="stat-item">
+              <span class="stat-number" th:text="${textileSavedKg + ' kg'}">6.4 kg</span>
+              <span class="stat-label">Textile Waste Diverted</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number" th:text="${#numbers.formatInteger(waterSavedL, 1, 'COMMA') + ' L'}">21,600 L</span>
+              <span class="stat-label">Clean Water Preserved</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number" th:text="${totalListings}">11</span>
+              <span class="stat-label">Garments in Circulation</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hero Visual Card -->
+        <div class="hero-visual">
+          <div class="hero-card">
+            <div class="hero-card-header">
+              <div>
+                <span class="badge badge-green">Zero Waste Goal</span>
+                <h3 style="font-size: 1.15rem; margin-top: 0.35rem;">Community Circulation Loop</h3>
+              </div>
+              <span style="font-size: 1.75rem;">♻️</span>
+            </div>
+
+            <div class="circular-eco-graphic">
+              <p style="font-size: 0.85rem; color: #064E3B; font-weight: 600;">
+                How ReWear Extends Clothing Lifecycles
+              </p>
+              <div class="circular-flow">
+                <div class="flow-step">
+                  <div class="flow-icon">👗</div>
+                  <span>Upload</span>
+                </div>
+                <div class="flow-arrow">➔</div>
+                <div class="flow-step">
+                  <div class="flow-icon">🤝</div>
+                  <span>Exchange</span>
+                </div>
+                <div class="flow-arrow">➔</div>
+                <div class="flow-step">
+                  <div class="flow-icon">🔄</div>
+                  <span>ReWear</span>
+                </div>
+              </div>
+            </div>
+
+            <div style="background: #F8FAFC; border-radius: var(--radius-md); padding: 1rem; border: 1px solid var(--border);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <span style="font-size: 0.82rem; font-weight: 600; color: #64748B;">Latest Successful Handover</span>
+                <span class="badge badge-green">Completed</span>
+              </div>
+              <div style="display: flex; gap: 0.75rem; align-items: center;">
+                <div style="width: 48px; height: 48px; border-radius: 8px; background: #E2E8F0; overflow: hidden;">
+                  <img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?w=200&auto=format&fit=crop&q=80" alt="Handover" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div>
+                  <h4 style="font-size: 0.92rem; margin: 0;">Vintage Denim Trucker Jacket</h4>
+                  <p style="font-size: 0.78rem; color: #64748B; margin: 0;">Exchanged in Green Neighborhood Hub • Saved 2,700 L Water</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Categories Bar -->
+  <section class="categories-section">
+    <div class="container">
+      <div class="section-header" style="margin-bottom: 1.5rem;">
+        <div>
+          <h2 class="section-title" style="font-size: 1.6rem;">Browse by Category</h2>
+          <p class="section-desc">Find conscious clothing for every style and family member</p>
+        </div>
+        <a th:href="@{/listings}" style="color: var(--primary); font-weight: 600; font-size: 0.92rem;">View All Categories ➔</a>
+      </div>
+
+      <div class="category-cards">
+        <a th:href="@{/listings(category='Women')}" class="cat-card">
+          <span class="cat-icon">👗</span>
+          <span class="cat-name">Women</span>
+        </a>
+        <a th:href="@{/listings(category='Men')}" class="cat-card">
+          <span class="cat-icon">👔</span>
+          <span class="cat-name">Men</span>
+        </a>
+        <a th:href="@{/listings(category='Kids')}" class="cat-card">
+          <span class="cat-icon">🧒</span>
+          <span class="cat-name">Kids &amp; Youth</span>
+        </a>
+        <a th:href="@{/listings(category='Outerwear')}" class="cat-card">
+          <span class="cat-icon">🧥</span>
+          <span class="cat-name">Outerwear</span>
+        </a>
+        <a th:href="@{/listings(category='Footwear')}" class="cat-card">
+          <span class="cat-icon">👟</span>
+          <span class="cat-name">Footwear</span>
+        </a>
+        <a th:href="@{/listings(category='Accessories')}" class="cat-card">
+          <span class="cat-icon">🎒</span>
+          <span class="cat-name">Accessories</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Available Listings -->
+  <section style="padding: 4rem 0;">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <span class="badge badge-green" style="margin-bottom: 0.5rem;">Fresh in Circulation</span>
+          <h2 class="section-title">Featured Community Garments</h2>
+          <p class="section-desc">Recently listed clothing available for immediate exchange or donation</p>
+        </div>
+        <div style="display: flex; gap: 0.75rem;">
+          <a th:href="@{/listings}" class="btn btn-outline btn-sm">Explore All (<span th:text="${totalListings}">11</span>)</a>
+        </div>
+      </div>
+
+      <div class="listings-grid">
+        <div th:each="item : ${recentListings}" class="listing-card">
+          <div class="card-img-wrapper">
+            <img th:src="${item.imageUrl}" th:alt="${item.title}" class="card-img" onerror="this.src='https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=600&auto=format&fit=crop&q=80'">
+            
+            <div class="card-badges">
+              <span th:if="${item.listingType == 'Donation'}" class="badge badge-amber">Free Donation</span>
+              <span th:if="${item.listingType == 'Exchange'}" class="badge badge-blue">Swap Only</span>
+              <span th:if="${item.listingType == 'Both'}" class="badge badge-green">Swap or Donate</span>
+              <span class="badge badge-gray" th:text="${item.condition}">Gently Used</span>
+            </div>
+
+            <div class="card-status">
+              <span class="badge badge-green" th:text="${item.status}">Available</span>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="card-meta">
+              <span th:text="${item.category + ' • Size ' + item.size}">Men • Size L</span>
+              <span th:text="'📍 ' + (${item.owner != null and item.owner.location != null} ? ${item.owner.location} : 'Community')">📍 Green Hub</span>
+            </div>
+            
+            <h3 class="card-title">
+              <a th:href="@{/listings/{id}(id=${item.id})}" th:text="${item.title}">Garment Title</a>
+            </h3>
+            
+            <p class="card-desc" th:text="${item.description}">Item description</p>
+
+            <div class="card-tags">
+              <span th:if="${item.brand != null and !item.brand.isEmpty()}" class="tag-pill" th:text="${item.brand}">Levi's</span>
+              <span th:if="${item.material != null and !item.material.isEmpty()}" class="tag-pill" th:text="${item.material}">100% Cotton</span>
+            </div>
+
+            <div class="card-footer">
+              <div class="owner-chip">
+                <span class="avatar-sm" th:text="${item.owner.name.substring(0, 1)}">D</span>
+                <span th:text="${item.owner.name}">David Kim</span>
+              </div>
+              
+              <a th:href="@{/listings/{id}(id=${item.id})}" class="btn btn-primary btn-sm">
+                View &amp; Request ➔
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Eco-Impact Calculator Section -->
+  <section class="eco-calculator-section" id="calculator">
+    <div class="container">
+      <div class="calculator-card">
+        <div class="calc-grid">
+          <div class="calc-slider-box">
+            <div>
+              <span class="badge badge-green" style="background: rgba(52, 211, 153, 0.2); color: #34D399; margin-bottom: 0.5rem;">Interactive Tool</span>
+              <h2 style="color: white; font-size: 2.2rem; margin-top: 0.25rem;">Calculate Your Environmental Savings</h2>
+              <p style="color: rgba(255,255,255,0.8); margin-top: 0.5rem; font-size: 0.95rem;">
+                Every garment reused prevents raw resource extraction, cuts toxic dye runoff, and avoids synthetic landfill degradation.
+              </p>
+            </div>
+
+            <div>
+              <label class="form-label" style="color: rgba(255,255,255,0.7); margin-bottom: 0.5rem;">If you reuse or exchange:</label>
+              <div class="slider-val-display">
+                <span class="slider-number" id="calc-garments-count">8</span>
+                <span style="font-size: 1.25rem; font-weight: 600; color: rgba(255,255,255,0.9);">clothing items</span>
+              </div>
+              <input type="range" min="1" max="50" value="8" class="calc-range" id="garments-slider" style="margin-top: 1rem;">
+            </div>
+
+            <a th:href="@{/listings/create}" class="btn btn-accent btn-lg" style="width: fit-content;">
+              Start Giving Clothing Today
+            </a>
+          </div>
+
+          <div class="calc-results">
+            <div class="calc-result-item">
+              <div class="result-icon">🗑️</div>
+              <div>
+                <div class="result-number" id="calc-textile">6.4 kg</div>
+                <div class="result-desc">Textile waste kept completely out of landfills</div>
+              </div>
+            </div>
+
+            <div class="calc-result-item">
+              <div class="result-icon">💧</div>
+              <div>
+                <div class="result-number" id="calc-water">21,600 L</div>
+                <div class="result-desc">Fresh water saved (equivalent to 144 hot showers)</div>
+              </div>
+            </div>
+
+            <div class="calc-result-item">
+              <div class="result-icon">🌍</div>
+              <div>
+                <div class="result-number" id="calc-co2">80 kg</div>
+                <div class="result-desc">Carbon dioxide (CO2e) emissions prevented</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Community Mission / Why ReWear -->
+  <section style="padding: 4.5rem 0; background: white;">
+    <div class="container">
+      <div style="text-align: center; max-width: 680px; margin: 0 auto 3rem;">
+        <span class="badge badge-green" style="margin-bottom: 0.5rem;">Sustainable Philosophy</span>
+        <h2 class="section-title">Why Circular Fashion Matters</h2>
+        <p class="section-desc">Over 92 million tons of clothing end up incinerated or in landfills every year. ReWear turns your closet into a sustainable community resource.</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+        <div style="padding: 2rem; border-radius: var(--radius-lg); background: var(--bg-card-alt); border: 1px solid var(--border);">
+          <div style="font-size: 2.2rem; margin-bottom: 1rem;">📦</div>
+          <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">1. Declutter Consciously</h3>
+          <p style="color: var(--text-muted); font-size: 0.92rem;">
+            Take good-condition clothes sitting unworn in your wardrobe and list them in under two minutes with simple phone photos.
+          </p>
+        </div>
+
+        <div style="padding: 2rem; border-radius: var(--radius-lg); background: var(--bg-card-alt); border: 1px solid var(--border);">
+          <div style="font-size: 2.2rem; margin-bottom: 1rem;">🔄</div>
+          <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">2. Fair Swap or Free Giveaway</h3>
+          <p style="color: var(--text-muted); font-size: 0.92rem;">
+            Choose whether to trade for another piece you love, or offer it as a gift to students, families, and neighbors who need it.
+          </p>
+        </div>
+
+        <div style="padding: 2rem; border-radius: var(--radius-lg); background: var(--bg-card-alt); border: 1px solid var(--border);">
+          <div style="font-size: 2.2rem; margin-bottom: 1rem;">🌱</div>
+          <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">3. Track Communal Impact</h3>
+          <p style="color: var(--text-muted); font-size: 0.92rem;">
+            Every accepted exchange updates item availability and records your verified environmental diversion metric on your profile.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div id="page-scripts"></div>
+
+</body>
+</html>

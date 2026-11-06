@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout (~{::title}, ~{::#page-content}, ~{::#page-scripts})}">
+<head>
+  <title>Explore Community Wardrobe - ReWear</title>
+</head>
+<body>
+
+<div id="page-content" class="container" style="padding-top: 2.5rem; padding-bottom: 4rem;">
+
+  <!-- Search & Filter Bar -->
+  <div class="filter-bar">
+    <form id="listings-filter-form" onsubmit="return false;">
+      <div class="filter-grid">
+        <div class="form-group">
+          <label class="form-label">Search Clothing</label>
+          <input type="text" name="q" class="form-input" placeholder="Search by title, brand, or material..." th:value="${query != null ? query : ''}">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <select name="category" class="form-select">
+            <option value="all">All Categories</option>
+            <option value="Women" th:selected="${category == 'Women'}">Women</option>
+            <option value="Men" th:selected="${category == 'Men'}">Men</option>
+            <option value="Kids" th:selected="${category == 'Kids'}">Kids</option>
+            <option value="Unisex" th:selected="${category == 'Unisex'}">Unisex</option>
+            <option value="Outerwear" th:selected="${category == 'Outerwear'}">Outerwear</option>
+            <option value="Footwear" th:selected="${category == 'Footwear'}">Footwear</option>
+            <option value="Accessories" th:selected="${category == 'Accessories'}">Accessories</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Size</label>
+          <select name="size" class="form-select">
+            <option value="all">All Sizes</option>
+            <option value="XS" th:selected="${size == 'XS'}">XS</option>
+            <option value="S" th:selected="${size == 'S'}">S</option>
+            <option value="M" th:selected="${size == 'M'}">M</option>
+            <option value="L" th:selected="${size == 'L'}">L</option>
+            <option value="XL" th:selected="${size == 'XL'}">XL</option>
+            <option value="XXL" th:selected="${size == 'XXL'}">XXL</option>
+            <option value="Free Size" th:selected="${size == 'Free Size'}">Free Size</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Type</label>
+          <select name="type" class="form-select">
+            <option value="all">All Types</option>
+            <option value="Donation" th:selected="${type == 'Donation'}">Free Donation</option>
+            <option value="Exchange" th:selected="${type == 'Exchange'}">Exchange Only</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="justify-content: flex-end;">
+          <label class="form-label">&nbsp;</label>
+          <a th:href="@{/listings/create}" class="btn btn-primary" style="white-space: nowrap;">
+            + List Item
+          </a>
+        </div>
+      </div>
+
+      <!-- Advanced Filters Row -->
+      <div style="display: flex; gap: 1.5rem; align-items: center; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); flex-wrap: wrap;">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">Condition:</span>
+          <select name="condition" class="form-select" style="padding: 0.35rem 0.75rem; width: auto; font-size: 0.85rem;">
+            <option value="all">Any Condition</option>
+            <option value="New with tags">New with tags</option>
+            <option value="Like New">Like New</option>
+            <option value="Gently Used">Gently Used</option>
+            <option value="Well Worn">Well Worn</option>
+          </select>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">Status:</span>
+          <select name="status" class="form-select" style="padding: 0.35rem 0.75rem; width: auto; font-size: 0.85rem;">
+            <option value="Available" selected>Available Only</option>
+            <option value="all">Include Completed</option>
+          </select>
+        </div>
+
+        <div style="margin-left: auto;">
+          <span id="results-count" style="font-size: 0.88rem; font-weight: 600; color: var(--primary-dark);">
+            <span th:text="${#lists.size(listings)}">0</span> items in wardrobe
+          </span>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Listings Grid -->
+  <div class="listings-grid" id="listings-container">
+    <div th:each="item : ${listings}" class="listing-card"
+         th:data-title="${item.title}" 
+         th:data-desc="${item.description}" 
+         th:data-brand="${item.brand != null ? item.brand : ''}" 
+         th:data-category="${item.category}" 
+         th:data-size="${item.size}" 
+         th:data-condition="${item.condition}" 
+         th:data-type="${item.listingType}" 
+         th:data-status="${item.status}">
+      
+      <div class="card-img-wrapper">
+        <img th:src="${item.imageUrl}" th:alt="${item.title}" class="card-img" onerror="this.src='https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=600&auto=format&fit=crop&q=80'">
+        
+        <div class="card-badges">
+          <span th:if="${item.listingType == 'Donation'}" class="badge badge-amber">Free Donation</span>
+          <span th:if="${item.listingType == 'Exchange'}" class="badge badge-blue">Exchange</span>
+          <span th:if="${item.listingType == 'Both'}" class="badge badge-green">Swap or Donate</span>
+          <span class="badge badge-gray" th:text="${item.condition}">Gently Used</span>
+        </div>
+
+        <div class="card-status">
+          <span class="badge" th:classappend="${item.status == 'Available' ? 'badge-green' : (item.status == 'Pending' ? 'badge-amber' : 'badge-gray')}" th:text="${item.status}">
+            Available
+          </span>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="card-meta">
+          <span th:text="${item.category + ' • Size ' + item.size}">Women • Size M</span>
+          <span th:text="'📍 ' + (${item.owner != null and item.owner.location != null} ? ${item.owner.location} : 'Community')">📍 Green Hub</span>
+        </div>
+        
+        <h3 class="card-title">
+          <a th:href="@{/listings/{id}(id=${item.id})}" th:text="${item.title}">Item Title</a>
+        </h3>
+        
+        <p class="card-desc" th:text="${item.description}">Item description</p>
+
+        <div class="card-tags">
+          <span th:if="${item.brand != null and !item.brand.isEmpty()}" class="tag-pill" th:text="${item.brand}">Brand</span>
+          <span th:if="${item.color != null and !item.color.isEmpty()}" class="tag-pill" th:text="'🎨 ' + ${item.color}">Color</span>
+          <span th:if="${item.material != null and !item.material.isEmpty()}" class="tag-pill" th:text="'🧵 ' + ${item.material}">Material</span>
+        </div>
+
+        <div class="card-footer">
+          <div class="owner-chip">
+            <span class="avatar-sm" th:text="${item.owner.name.substring(0, 1)}">S</span>
+            <span th:text="${item.owner.name}">Sarah</span>
+          </div>
+          
+          <a th:href="@{/listings/{id}(id=${item.id})}" class="btn btn-primary btn-sm">
+            View &amp; Request
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State Fallback -->
+  <div id="empty-listings" th:style="${#lists.isEmpty(listings) ? 'display: block; text-align: center; padding: 4rem 1rem;' : 'display: none; text-align: center; padding: 4rem 1rem;'}">
+    <div style="font-size: 3.5rem; margin-bottom: 1rem;">👗</div>
+    <h3 style="font-size: 1.5rem; color: #064E3B; margin-bottom: 0.5rem;">No Clothing Items Found</h3>
+    <p style="color: var(--text-muted); max-width: 420px; margin: 0 auto 1.5rem;">
+      Try adjusting your search criteria, or be the first in your area to upload a garment to this category!
+    </p>
+    <a th:href="@{/listings/create}" class="btn btn-primary">
+      + Upload Clothing Item
+    </a>
+  </div>
+
+</div>
+
+<div id="page-scripts"></div>
+
+</body>
+</html>

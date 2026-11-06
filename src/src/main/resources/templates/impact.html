@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout (~{::title}, ~{::#page-content}, ~{::#page-scripts})}">
+<head>
+  <title>Sustainability Hub &amp; Circular Fashion - ReWear</title>
+</head>
+<body>
+
+<div id="page-content">
+
+  <!-- Impact Hero -->
+  <div style="background: linear-gradient(135deg, #064E3B, #0F382A); color: white; padding: 4.5rem 0 3.5rem;">
+    <div class="container">
+      <div style="max-width: 720px;">
+        <span class="badge badge-green" style="background: rgba(52, 211, 153, 0.2); color: #34D399; margin-bottom: 0.75rem;">
+          Environmental Consciousness
+        </span>
+        <h1 style="font-size: 3rem; color: white; margin-bottom: 1rem;">
+          The Power of Circular Fashion
+        </h1>
+        <p style="font-size: 1.15rem; color: #A7F3D0; line-height: 1.6; margin-bottom: 2rem;">
+          The average garment is worn only 7 to 10 times before being discarded. By extending the life of clothes by just 9 months, carbon, water, and waste footprints are reduced by 20–30% each.
+        </p>
+        <a href="#calculator" class="btn btn-primary btn-lg">Calculate Your Impact ➔</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container" style="padding-top: 4rem; padding-bottom: 5rem;">
+
+    <!-- Interactive Calculator Embedded -->
+    <div class="calculator-card" id="calculator" style="margin-bottom: 5rem;">
+      <div class="calc-grid">
+        <div class="calc-slider-box">
+          <div>
+            <span class="badge badge-green" style="background: rgba(52, 211, 153, 0.2); color: #34D399; margin-bottom: 0.5rem;">Interactive Simulator</span>
+            <h2 style="color: white; font-size: 2.2rem; margin-top: 0.25rem;">Household ReWear Calculator</h2>
+            <p style="color: rgba(255,255,255,0.8); margin-top: 0.5rem; font-size: 0.95rem;">
+              Slide to estimate the collective environmental resources your household saves through clothing exchange and donation.
+            </p>
+          </div>
+
+          <div>
+            <label class="form-label" style="color: rgba(255,255,255,0.7); margin-bottom: 0.5rem;">Number of garments circulated:</label>
+            <div class="slider-val-display">
+              <span class="slider-number" id="calc-garments-count">12</span>
+              <span style="font-size: 1.25rem; font-weight: 600; color: rgba(255,255,255,0.9);">pieces</span>
+            </div>
+            <input type="range" min="1" max="50" value="12" class="calc-range" id="garments-slider" style="margin-top: 1rem;">
+          </div>
+
+          <a th:href="@{/listings/create}" class="btn btn-accent btn-lg" style="width: fit-content;">
+            Circulate an Item Now
+          </a>
+        </div>
+
+        <div class="calc-results">
+          <div class="calc-result-item">
+            <div class="result-icon">🗑️</div>
+            <div>
+              <div class="result-number" id="calc-textile">9.6 kg</div>
+              <div class="result-desc">Solid textile waste diverted directly from local landfills</div>
+            </div>
+          </div>
+
+          <div class="calc-result-item">
+            <div class="result-icon">💧</div>
+            <div>
+              <div class="result-number" id="calc-water">32,400 L</div>
+              <div class="result-desc">Agricultural clean water saved (enough drinking water for 35 people for a year)</div>
+            </div>
+          </div>
+
+          <div class="calc-result-item">
+            <div class="result-icon">🌍</div>
+            <div>
+              <div class="result-number" id="calc-co2">120 kg</div>
+              <div class="result-desc">Carbon equivalent emissions prevented (equal to driving 480 km in a gas car)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- The Reality of Textile Waste -->
+    <div id="textile-facts" style="margin-bottom: 5rem;">
+      <div style="text-align: center; max-width: 680px; margin: 0 auto 3rem;">
+        <span class="badge badge-green" style="margin-bottom: 0.5rem;">Fast Fashion Reality</span>
+        <h2 class="section-title">The Hidden Cost of Unused Clothing</h2>
+        <p class="section-desc">Traditional consumption patterns produce unsustainable environmental damage</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+        <div style="background: white; border-radius: var(--radius-lg); padding: 2rem; border: 1px solid var(--border); box-shadow: var(--shadow-sm);">
+          <div style="font-size: 2.2rem; margin-bottom: 1rem;">🌊</div>
+          <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem; color: #064E3B;">2,700 Liters Per Shirt</h3>
+          <p style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.6;">
+            Producing a single cotton t-shirt requires approximately 2,700 liters of water—enough to satisfy one person's drinking water needs for 900 days.
+          </p>
+        </div>
+
+        <div style="background: white; border-radius: var(--radius-lg); padding: 2rem; border: 1px solid var(--border); box-shadow: var(--shadow-sm);">
+          <div style="font-size: 2.2rem; margin-bottom: 1rem;">⏳</div>
+          <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem; color: #064E3B;">200+ Years to Decompose</h3>
+          <p style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.6;">
+            Synthetic fabrics like polyester, nylon, and acrylic are petroleum-derived plastics. When discarded into landfills, they can take over two centuries to break down.
+          </p>
+        </div>
+
+        <div style="background: white; border-radius: var(--radius-lg); padding: 2rem; border: 1px solid var(--border); box-shadow: var(--shadow-sm);">
+          <div style="font-size: 2.2rem; margin-bottom: 1rem;">🔥</div>
+          <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem; color: #064E3B;">1 Garbage Truck Per Second</h3>
+          <p style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.6;">
+            Globally, the equivalent of one full garbage truck of textiles is burned or landfilled every single second. ReWear interrupts this destructive linear flow.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sustainable Clothing Care Guide -->
+    <div id="care-guide" style="background: var(--bg-card-alt); border-radius: var(--radius-xl); padding: 3rem; border: 1px solid var(--border);">
+      <div style="max-width: 650px; margin-bottom: 2rem;">
+        <span class="badge badge-green" style="margin-bottom: 0.5rem;">Actionable Tips</span>
+        <h2 style="font-size: 2rem; color: #064E3B;">Extending the Life of Your Clothes</h2>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">Small adjustments to everyday laundry and storage double garment lifespans:</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem;">
+        <div style="background: white; padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
+          <h4 style="font-size: 1.05rem; color: var(--primary-dark); margin-bottom: 0.35rem;">❄️ Wash Cold (30°C / 85°F)</h4>
+          <p style="font-size: 0.88rem; color: var(--text-muted);">Cold water prevents shrinkage, preserves dye brilliance, and cuts 90% of washing machine energy.</p>
+        </div>
+
+        <div style="background: white; padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
+          <h4 style="font-size: 1.05rem; color: var(--primary-dark); margin-bottom: 0.35rem;">🌬️ Air Dry Over Tumble</h4>
+          <p style="font-size: 0.88rem; color: var(--text-muted);">Tumble dryers degrade fabric fibers and cause lint buildup. Air-drying keeps clothes soft and shape-stable.</p>
+        </div>
+
+        <div style="background: white; padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
+          <h4 style="font-size: 1.05rem; color: var(--primary-dark); margin-bottom: 0.35rem;">🪡 Learn Visible Mending</h4>
+          <p style="font-size: 0.88rem; color: var(--text-muted);">A missing button or tiny seam split takes 5 minutes to stitch and turns a worn piece into beloved heritage wear.</p>
+        </div>
+
+        <div style="background: white; padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
+          <h4 style="font-size: 1.05rem; color: var(--primary-dark); margin-bottom: 0.35rem;">🔄 Swap Instead of Shopping</h4>
+          <p style="font-size: 0.88rem; color: var(--text-muted);">Whenever you crave wardrobe novelty, browse ReWear first before purchasing new fast-fashion pieces.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<div id="page-scripts"></div>
+
+</body>
+</html>

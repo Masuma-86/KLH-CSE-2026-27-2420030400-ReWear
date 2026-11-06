@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout (~{::title}, ~{::#page-content}, ~{::#page-scripts})}">
+<head>
+  <title th:text="${listing.title + ' - ReWear'}">Item Title - ReWear</title>
+</head>
+<body>
+
+<div id="page-content" class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
+
+  <!-- Breadcrumbs -->
+  <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem; display: flex; gap: 0.5rem; align-items: center;">
+    <a th:href="@{/}" style="color: var(--text-muted);">Home</a>
+    <span>/</span>
+    <a th:href="@{/listings}" style="color: var(--text-muted);">Listings</a>
+    <span>/</span>
+    <a th:href="@{/listings(category=${listing.category})}" style="color: var(--text-muted);" th:text="${listing.category}">Category</a>
+    <span>/</span>
+    <span style="color: var(--text-main); font-weight: 600;" th:text="${listing.title}">Item Title</span>
+  </div>
+
+  <div class="detail-grid">
+    <!-- Left: Image Gallery -->
+    <div class="detail-gallery">
+      <img th:src="${listing.imageUrl}" th:alt="${listing.title}" class="detail-img-main" onerror="this.src='https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=800&auto=format&fit=crop&q=80'">
+
+      <!-- Environmental Savings Callout -->
+      <div style="margin-top: 1.5rem; background: var(--primary-ultra-light); border: 1px solid var(--primary-light); border-radius: var(--radius-lg); padding: 1.25rem;">
+        <div style="display: flex; align-items: center; gap: 0.65rem; color: var(--primary-dark); font-weight: 700; margin-bottom: 0.5rem;">
+          <span>🌱</span> Circular Impact of this Piece
+        </div>
+        <p style="font-size: 0.88rem; color: #064E3B; margin: 0;">
+          By claiming or trading for this item, you prevent <strong>0.8 kg</strong> of landfill waste and conserve <strong>2,700 liters</strong> of fresh agricultural water.
+        </p>
+      </div>
+    </div>
+
+    <!-- Right: Clothing Specifications & Action Panel -->
+    <div class="detail-info">
+      <div>
+        <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap;">
+          <span th:if="${listing.listingType == 'Donation'}" class="badge badge-amber">Free Donation</span>
+          <span th:if="${listing.listingType == 'Exchange'}" class="badge badge-blue">Exchange Only</span>
+          <span th:if="${listing.listingType == 'Both'}" class="badge badge-green">Swap or Donate</span>
+          <span class="badge badge-gray" th:text="${listing.condition}">Gently Used</span>
+          <span class="badge" th:classappend="${listing.status == 'Available' ? 'badge-green' : (listing.status == 'Pending' ? 'badge-amber' : 'badge-gray')}" th:text="'Status: ' + ${listing.status}">
+            Status: Available
+          </span>
+        </div>
+
+        <h1 style="font-size: 2.2rem; color: #064E3B; margin-bottom: 0.5rem;" th:text="${listing.title}">Item Title</h1>
+        <p style="font-size: 0.95rem; color: var(--text-muted);" th:text="'Listed on ' + ${#temporals.format(listing.createdAt, 'MMMM dd, yyyy')} + ' • ' + ${listing.views} + ' views'">
+          Listed on October 30, 2026 • 42 views
+        </p>
+      </div>
+
+      <!-- Attributes Table -->
+      <div class="attributes-grid">
+        <div class="attr-item">
+          <span class="attr-name">Category</span>
+          <span class="attr-val" th:text="${listing.category}">Men</span>
+        </div>
+        <div class="attr-item">
+          <span class="attr-name">Size</span>
+          <span class="attr-val" th:text="${listing.size}">L</span>
+        </div>
+        <div class="attr-item">
+          <span class="attr-name">Condition</span>
+          <span class="attr-val" th:text="${listing.condition}">Like New</span>
+        </div>
+        <div class="attr-item">
+          <span class="attr-name">Brand</span>
+          <span class="attr-val" th:text="${listing.brand != null and !listing.brand.isEmpty() ? listing.brand : 'Artisanal / Unbranded'}">Levi's</span>
+        </div>
+        <div class="attr-item">
+          <span class="attr-name">Color</span>
+          <span class="attr-val" th:text="${listing.color != null and !listing.color.isEmpty() ? listing.color : 'Natural'}">Indigo</span>
+        </div>
+        <div class="attr-item">
+          <span class="attr-name">Material / Fabric</span>
+          <span class="attr-val" th:text="${listing.material != null and !listing.material.isEmpty() ? listing.material : 'Standard Textile'}">100% Cotton</span>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div>
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Description</h3>
+        <p style="color: var(--text-muted); line-height: 1.7; white-space: pre-line;" th:text="${listing.description}">Description</p>
+      </div>
+
+      <!-- Owner Profile Card -->
+      <div style="background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 0.85rem;">
+          <div class="avatar-sm" style="width: 2.85rem; height: 2.85rem; font-size: 1.15rem;" th:text="${listing.owner.name.substring(0, 1)}">
+            D
+          </div>
+          <div>
+            <h4 style="font-size: 1rem; margin: 0;" th:text="${listing.owner.name}">David Kim</h4>
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin: 0;" th:text="'📍 ' + (${listing.owner.location != null ? listing.owner.location : 'Community Hub'}) + ' • ' + ${listing.owner.completedCount} + ' handovers completed'">
+              📍 San Francisco • 2 handovers completed
+            </p>
+          </div>
+        </div>
+        <span class="badge badge-green">Verified Contributor</span>
+      </div>
+
+      <!-- Action Area -->
+      <div style="display: flex; flex-direction: column; gap: 1rem; padding-top: 1rem; border-top: 1px solid var(--border);">
+        <th:block th:if="${currentUser != null and currentUser.id == listing.owner.id}">
+          <!-- Owner Controls -->
+          <div style="background: var(--bg-card-alt); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
+            <h4 style="font-size: 0.95rem; margin-bottom: 0.5rem; color: var(--text-main);">Manage Your Listing</h4>
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+              <a th:href="@{/listings/{id}/edit(id=${listing.id})}" class="btn btn-secondary btn-sm">
+                ✏️ Edit Details
+              </a>
+              <form th:action="@{/listings/{id}/delete(id=${listing.id})}" method="POST" onsubmit="return confirm('Are you sure you want to remove this listing?');" style="display: inline;">
+                <button type="submit" class="btn btn-danger btn-sm">
+                  🗑️ Delete Listing
+                </button>
+              </form>
+              <a th:href="@{/dashboard}" class="btn btn-outline btn-sm">
+                View Requests (<span th:text="${listing.requests.size()}">0</span>)
+              </a>
+            </div>
+          </div>
+        </th:block>
+
+        <th:block th:unless="${currentUser != null and currentUser.id == listing.owner.id}">
+          <th:block th:if="${listing.available}">
+            <!-- User Request Controls -->
+            <th:block th:if="${currentUser != null}">
+              <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <button th:if="${listing.exchange}" class="btn btn-primary btn-lg" style="flex: 1;" data-open-modal="modal-exchange">
+                  🤝 Propose Exchange
+                </button>
+                <button th:if="${listing.donation}" class="btn btn-accent btn-lg" style="flex: 1;" data-open-modal="modal-donation">
+                  🎁 Request Donation
+                </button>
+              </div>
+            </th:block>
+            <th:block th:unless="${currentUser != null}">
+              <div style="background: var(--bg-card-alt); border-radius: var(--radius-md); padding: 1.25rem; text-align: center;">
+                <p style="font-size: 0.95rem; margin-bottom: 0.75rem; color: var(--text-main);">
+                  Log in or create a free ReWear account to request this item.
+                </p>
+                <div style="display: flex; gap: 0.75rem; justify-content: center;">
+                  <a th:href="@{/login}" class="btn btn-outline btn-sm">Sign In</a>
+                  <a th:href="@{/register}" class="btn btn-primary btn-sm">Join ReWear</a>
+                </div>
+              </div>
+            </th:block>
+          </th:block>
+          <th:block th:unless="${listing.available}">
+            <!-- Unavailable State -->
+            <div style="background: #F1F5F9; border-radius: var(--radius-md); padding: 1.25rem; text-align: center; color: var(--text-muted);">
+              This clothing item is currently <strong th:text="${listing.status}">Exchanged</strong>.
+            </div>
+          </th:block>
+
+          <!-- Report Inappropriate Content Link -->
+          <div th:if="${currentUser != null}" style="text-align: right;">
+            <button style="background: none; border: none; font-size: 0.8rem; color: #94A3B8; cursor: pointer; text-decoration: underline;" data-open-modal="modal-report">
+              🚩 Report this listing
+            </button>
+          </div>
+        </th:block>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL: Propose Exchange -->
+<div class="modal-backdrop" id="modal-exchange">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 class="modal-title">Propose Clothing Exchange</h3>
+      <button class="modal-close" data-close-modal>&times;</button>
+    </div>
+    <form th:action="@{/listings/{id}/request(id=${listing.id})}" method="POST">
+      <input type="hidden" name="request_type" value="Exchange">
+      <div class="modal-body">
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+          Offer an item from your wardrobe to swap with <strong th:text="${listing.owner.name}">Owner</strong> for the <em th:text="${'&quot;' + listing.title + '&quot;'}">&quot;Item&quot;</em>.
+        </p>
+
+        <div class="form-group" style="margin-bottom: 1.25rem;">
+          <label class="form-label">Select Item You Wish to Offer (Optional)</label>
+          <select name="offered_item_id" class="form-select">
+            <option value="">-- No specific item (Propose in message) --</option>
+            <option th:each="myItem : ${userWardrobe}" th:value="${myItem.id}" th:text="${myItem.title + ' (' + myItem.category + ' - Size ' + myItem.size + ')'}"></option>
+          </select>
+          <span th:if="${#lists.isEmpty(userWardrobe)}" style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.35rem;">
+            Tip: You haven't uploaded items yet. You can still message the owner or <a th:href="@{/listings/create}" style="color: var(--primary);">upload an item first</a>.
+          </span>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 1.25rem;">
+          <label class="form-label">Message &amp; Handover Proposal</label>
+          <textarea name="message" class="form-textarea" rows="4" placeholder="Hello! I'd love to swap for this. I'm available near the central station or community center..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Your Contact / Handover Details</label>
+          <input type="text" name="handover_notes" class="form-input" placeholder="Preferred pickup point or contact number" th:value="${currentUser != null ? currentUser.phone : ''}">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
+        <button type="submit" class="btn btn-primary">Send Exchange Request</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL: Request Donation -->
+<div class="modal-backdrop" id="modal-donation">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 class="modal-title">Request Free Clothing Donation</h3>
+      <button class="modal-close" data-close-modal>&times;</button>
+    </div>
+    <form th:action="@{/listings/{id}/request(id=${listing.id})}" method="POST">
+      <input type="hidden" name="request_type" value="Donation">
+      <div class="modal-body">
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+          This item is listed as a free community donation by <strong th:text="${listing.owner.name}">Owner</strong>. Send a polite request to coordinate pickup or delivery.
+        </p>
+
+        <div class="form-group" style="margin-bottom: 1.25rem;">
+          <label class="form-label">Message to Owner</label>
+          <textarea name="message" class="form-textarea" rows="4" placeholder="Hi! I would really appreciate this garment. I can pick it up at your convenience..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Handover Coordination Note</label>
+          <input type="text" name="handover_notes" class="form-input" placeholder="Your availability / phone number / pickup preference" th:value="${currentUser != null ? currentUser.phone : ''}">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
+        <button type="submit" class="btn btn-accent">Submit Donation Request</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL: Report Listing -->
+<div class="modal-backdrop" id="modal-report">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 class="modal-title">Report Listing</h3>
+      <button class="modal-close" data-close-modal>&times;</button>
+    </div>
+    <form th:action="@{/report/{listingId}(listingId=${listing.id})}" method="POST">
+      <div class="modal-body">
+        <div class="form-group" style="margin-bottom: 1.25rem;">
+          <label class="form-label">Reason for Report</label>
+          <select name="reason" class="form-select" required>
+            <option value="Inappropriate">Inappropriate or Offensive Material</option>
+            <option value="Counterfeit">Counterfeit / Fake Product</option>
+            <option value="Misleading">Misleading Description / Stolen Photos</option>
+            <option value="Broken/Damaged">Severely Damaged or Unwearable</option>
+            <option value="Spam">Spam or Commercial Solicitation</option>
+            <option value="Other">Other Community Rule Violation</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Additional Details</label>
+          <textarea name="details" class="form-textarea" rows="3" placeholder="Please describe the issue to help our moderation team..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
+        <button type="submit" class="btn btn-danger">Submit Report</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="page-scripts"></div>
+
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "workbench.colorCustomizations": {
+    "activityBar.background": "#080c14",
+    "titleBar.activeBackground": "#0f172a",
+    "statusBar.background": "#6366f1",
+    "statusBar.foreground": "#ffffff"
+  },
+  "changelens.activeProfile": "ASE",
+  "changelens.workspaceName": "ChangeLens-ASE",
+  "changelens.environment": "Development",
+  "git.ignoreLimitWarning": true,
+  "java.compile.nullAnalysis.mode": "automatic"
+}

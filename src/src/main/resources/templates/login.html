@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout (~{::title}, ~{::#page-content}, ~{::#page-scripts})}">
+<head>
+  <title>Sign In - ReWear</title>
+</head>
+<body>
+
+<div id="page-content" class="container" style="padding-top: 3.5rem; padding-bottom: 5rem; max-width: 480px;">
+
+  <div style="background: white; border-radius: var(--radius-xl); border: 1px solid var(--border); padding: 2.5rem; box-shadow: var(--shadow-lg);">
+    
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <div class="brand-icon" style="margin: 0 auto 1rem; width: 3rem; height: 3rem; font-size: 1.5rem;">🌱</div>
+      <h1 style="font-size: 1.85rem; color: #064E3B;">Welcome Back</h1>
+      <p style="color: var(--text-muted); font-size: 0.92rem; margin-top: 0.35rem;">Sign in to your ReWear sustainable wardrobe account</p>
+    </div>
+
+    <!-- Quick Demo Accounts One-Click Fill -->
+    <div style="background: var(--primary-ultra-light); border: 1px solid var(--primary-light); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.5rem;">
+      <div style="font-size: 0.78rem; font-weight: 700; color: var(--primary-dark); text-transform: uppercase; margin-bottom: 0.5rem;">
+        ⚡ Quick Demo Logins (Click to autofill):
+      </div>
+      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="fillLogin('admin@rewear.org', 'admin123')">
+          ★ Admin
+        </button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="fillLogin('sarah@example.com', 'user123')">
+          Sarah (Active Trader)
+        </button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="fillLogin('david@example.com', 'user123')">
+          David (Donor)
+        </button>
+      </div>
+    </div>
+
+    <form th:action="@{/login}" method="POST">
+      <div class="form-group" style="margin-bottom: 1.25rem;">
+        <label class="form-label">Email Address</label>
+        <input type="email" name="email" id="login-email" class="form-input" placeholder="you@example.com" required>
+      </div>
+
+      <div class="form-group" style="margin-bottom: 1.75rem;">
+        <label class="form-label">Password</label>
+        <input type="password" name="password" id="login-password" class="form-input" placeholder="••••••••" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; margin-bottom: 1.25rem;">
+        Sign In to ReWear ➔
+      </button>
+
+      <div style="text-align: center; font-size: 0.88rem; color: var(--text-muted);">
+        Don't have an account? 
+        <a th:href="@{/register}" style="color: var(--primary); font-weight: 600;">Create one free</a>
+      </div>
+    </form>
+
+  </div>
+
+</div>
+
+<div id="page-scripts">
+  <script>
+    function fillLogin(email, pwd) {
+      document.getElementById('login-email').value = email;
+      document.getElementById('login-password').value = pwd;
+    }
+  </script>
+</div>
+
+</body>
+</html>

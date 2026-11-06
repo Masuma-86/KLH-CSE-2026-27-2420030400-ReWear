@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout (~{::title}, ~{::#page-content}, ~{::#page-scripts})}">
+<head>
+  <title>My Dashboard - ReWear</title>
+</head>
+<body>
+
+<div id="page-content">
+
+  <div class="dashboard-header">
+    <div class="container">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem;">
+        <div style="display: flex; align-items: center; gap: 1.25rem;">
+          <div class="avatar-sm" style="width: 4rem; height: 4rem; font-size: 1.75rem; background: #10B981; color: white;" th:text="${currentUser.name.substring(0, 1)}">
+            U
+          </div>
+          <div>
+            <h1 style="font-size: 2rem; color: #064E3B; margin-bottom: 0.25rem;" th:text="${currentUser.name}">User Name</h1>
+            <p style="font-size: 0.92rem; color: var(--text-muted); margin: 0;" th:text="'📍 ' + (${currentUser.location != null ? currentUser.location : 'Community Member'}) + ' • Member since ' + ${#temporals.format(currentUser.createdAt, 'MMMM yyyy')}">
+              📍 Brooklyn • Member since 2026
+            </p>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem;">
+          <a th:href="@{/listings/create}" class="btn btn-primary">
+            + Add New Clothing
+          </a>
+        </div>
+      </div>
+
+      <!-- Personal Sustainability Scorecard -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; margin-top: 2rem;">
+        <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; box-shadow: var(--shadow-sm);">
+          <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">Items Circulated</div>
+          <div style="font-size: 2rem; font-weight: 800; color: #064E3B; font-family: 'Outfit', sans-serif;" th:text="${impact.items_diverted}">
+            3
+          </div>
+          <div style="font-size: 0.78rem; color: #10B981;">Actively circulating</div>
+        </div>
+
+        <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; box-shadow: var(--shadow-sm);">
+          <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">Textile Saved</div>
+          <div style="font-size: 2rem; font-weight: 800; color: #059669; font-family: 'Outfit', sans-serif;" th:text="${impact.textile_kg + ' kg'}">
+            2.4 kg
+          </div>
+          <div style="font-size: 0.78rem; color: #10B981;">Diverted from landfill</div>
+        </div>
+
+        <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; box-shadow: var(--shadow-sm);">
+          <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">Water Conserved</div>
+          <div style="font-size: 2rem; font-weight: 800; color: #0D9488; font-family: 'Outfit', sans-serif;" th:text="${#numbers.formatInteger(impact.water_liters, 1, 'COMMA') + ' L'}">
+            8,100 L
+          </div>
+          <div style="font-size: 0.78rem; color: #10B981;">Agricultural water saved</div>
+        </div>
+
+        <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; box-shadow: var(--shadow-sm);">
+          <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">CO2 Avoided</div>
+          <div style="font-size: 2rem; font-weight: 800; color: #F59E0B; font-family: 'Outfit', sans-serif;" th:text="${impact.co2_kg + ' kg'}">
+            30 kg
+          </div>
+          <div style="font-size: 0.78rem; color: #10B981;">Carbon footprint reduced</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container" style="padding-bottom: 5rem;">
+
+    <!-- Tabbed Navigation -->
+    <div class="tabs-nav" data-tabs>
+      <button class="tab-btn" th:classappend="${activeTab == 'wardrobe' ? 'active' : ''}" data-target="tab-my-listings">
+        <span>👗</span> My Wardrobe (<span th:text="${#lists.size(userListings)}">0</span>)
+      </button>
+      <button class="tab-btn" th:classappend="${activeTab == 'received' ? 'active' : ''}" data-target="tab-received">
+        <span>📬</span> Received Requests (<span th:text="${#lists.size(receivedRequests)}">0</span>)
+      </button>
+      <button class="tab-btn" th:classappend="${activeTab == 'sent' ? 'active' : ''}" data-target="tab-sent">
+        <span>📤</span> Sent Requests (<span th:text="${#lists.size(sentRequests)}">0</span>)
+      </button>
+    </div>
+
+    <!-- TAB 1: My Listings -->
+    <div class="tab-pane" th:classappend="${activeTab == 'wardrobe' ? 'active' : ''}" id="tab-my-listings">
+      <div th:if="${not #lists.isEmpty(userListings)}" class="listings-grid">
+        <div th:each="item : ${userListings}" class="listing-card">
+          <div class="card-img-wrapper">
+            <img th:src="${item.imageUrl}" th:alt="${item.title}" class="card-img" onerror="this.src='https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=600&auto=format&fit=crop&q=80'">
+            <div class="card-badges">
+              <span class="badge badge-gray" th:text="${item.condition}">Like New</span>
+              <span class="badge" th:classappend="${item.listingType == 'Donation' ? 'badge-amber' : 'badge-blue'}" th:text="${item.listingType}">Exchange</span>
+            </div>
+            <div class="card-status">
+              <span class="badge" th:classappend="${item.status == 'Available' ? 'badge-green' : (item.status == 'Pending' ? 'badge-amber' : 'badge-gray')}" th:text="${item.status}">
+                Available
+              </span>
+            </div>
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">
+              <a th:href="@{/listings/{id}(id=${item.id})}" th:text="${item.title}">Garment Title</a>
+            </h3>
+            <p class="card-desc" th:text="${item.description}">Description</p>
+            <div class="card-tags">
+              <span class="tag-pill" th:text="${item.category}">Category</span>
+              <span class="tag-pill" th:text="'Size ' + ${item.size}">Size</span>
+              <span class="tag-pill" th:text="'Requests: ' + ${item.requests.size()}">Requests: 0</span>
+            </div>
+            <div class="card-footer">
+              <a th:href="@{/listings/{id}/edit(id=${item.id})}" class="btn btn-secondary btn-sm">
+                ✏️ Edit
+              </a>
+              <form th:action="@{/listings/{id}/delete(id=${item.id})}" method="POST" onsubmit="return confirm('Remove listing?');" style="display:inline;">
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div th:if="${#lists.isEmpty(userListings)}" style="text-align: center; padding: 4rem 1rem; background: white; border-radius: var(--radius-lg); border: 1px solid var(--border);">
+        <div style="font-size: 3rem; margin-bottom: 0.75rem;">🧥</div>
+        <h3 style="font-size: 1.35rem; color: #064E3B; margin-bottom: 0.5rem;">Your wardrobe is empty</h3>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem; max-width: 400px; margin-left: auto; margin-right: auto;">
+          Upload quality garments you no longer wear to begin exchanging or donating to neighbors.
+        </p>
+        <a th:href="@{/listings/create}" class="btn btn-primary">+ Upload Your First Item</a>
+      </div>
+    </div>
+
+    <!-- TAB 2: Received Requests -->
+    <div class="tab-pane" th:classappend="${activeTab == 'received' ? 'active' : ''}" id="tab-received">
+      <div th:if="${not #lists.isEmpty(receivedRequests)}" class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Item Requested</th>
+              <th>Requester</th>
+              <th>Type</th>
+              <th>Offered Exchange Item</th>
+              <th>Message</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="req : ${receivedRequests}">
+              <td>
+                <div style="display: flex; gap: 0.75rem; align-items: center;">
+                  <img th:src="${req.listing.imageUrl}" alt="" style="width: 42px; height: 42px; border-radius: 6px; object-fit: cover;" onerror="this.src='https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=200&auto=format&fit=crop&q=80'">
+                  <div>
+                    <a th:href="@{/listings/{id}(id=${req.listing.id})}" style="font-weight: 600; color: var(--text-main);" th:text="${req.listing.title}">Item</a>
+                    <div style="font-size: 0.78rem; color: var(--text-muted);" th:text="${#temporals.format(req.createdAt, 'MMM dd, yyyy')}">Date</div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <strong th:text="${req.requester.name}">Requester Name</strong>
+                <div style="font-size: 0.78rem; color: var(--text-muted);">
+                  <span th:text="'📍 ' + (${req.requester.location != null ? req.requester.location : 'Community'})">📍 Community</span>
+                  <th:block th:if="${(req.status == 'Accepted' or req.status == 'Completed') and req.requester.phone != null}">
+                    <br><span th:text="'📞 ' + ${req.requester.phone}">📞 Phone</span>
+                  </th:block>
+                </div>
+              </td>
+              <td>
+                <span class="badge" th:classappend="${req.requestType == 'Donation' ? 'badge-amber' : 'badge-blue'}" th:text="${req.requestType}">
+                  Exchange
+                </span>
+              </td>
+              <td>
+                <div th:if="${req.offeredItem != null}" style="display: flex; gap: 0.5rem; align-items: center;">
+                  <img th:src="${req.offeredItem.imageUrl}" alt="" style="width: 32px; height: 32px; border-radius: 4px; object-fit: cover;">
+                  <a th:href="@{/listings/{id}(id=${req.offeredItem.id})}" style="font-size: 0.85rem; color: var(--primary-dark); font-weight: 500;" th:text="${req.offeredItem.title}">
+                    Offered Item
+                  </a>
+                </div>
+                <span th:if="${req.offeredItem == null}" style="color: var(--text-muted); font-size: 0.82rem;">None (Direct request)</span>
+              </td>
+              <td style="max-width: 240px;">
+                <p style="font-size: 0.85rem; margin: 0; color: var(--text-main);" th:text="${req.message}">Message</p>
+                <div th:if="${req.handoverNotes != null and !req.handoverNotes.isEmpty()}" style="font-size: 0.75rem; color: var(--primary-dark); background: var(--primary-ultra-light); padding: 0.25rem 0.5rem; border-radius: 4px; margin-top: 0.35rem;" th:text="'Coordination: ' + ${req.handoverNotes}">
+                  Coordination notes
+                </div>
+              </td>
+              <td>
+                <span class="badge" th:classappend="${req.status == 'Accepted' ? 'badge-green' : (req.status == 'Completed' ? 'badge-blue' : (req.status == 'Rejected' ? 'badge-red' : 'badge-amber'))}" th:text="${req.status}">
+                  Pending
+                </span>
+              </td>
+              <td>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                  <th:block th:if="${req.status == 'Pending'}">
+                    <form th:action="@{/requests/{id}/action(id=${req.id})}" method="POST" style="display: inline;">
+                      <input type="hidden" name="action" value="accept">
+                      <button type="submit" class="btn btn-primary btn-sm">Accept</button>
+                    </form>
+                    <form th:action="@{/requests/{id}/action(id=${req.id})}" method="POST" style="display: inline;">
+                      <input type="hidden" name="action" value="reject">
+                      <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                    </form>
+                  </th:block>
+                  <th:block th:if="${req.status == 'Accepted'}">
+                    <form th:action="@{/requests/{id}/complete(id=${req.id})}" method="POST" style="display: inline;">
+                      <button type="submit" class="btn btn-accent btn-sm">Mark Completed</button>
+                    </form>
+                  </th:block>
+                  <th:block th:if="${req.status != 'Pending' and req.status != 'Accepted'}">
+                    <span style="font-size: 0.8rem; color: var(--text-muted);" th:text="${req.status}">Completed</span>
+                  </th:block>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div th:if="${#lists.isEmpty(receivedRequests)}" style="text-align: center; padding: 4rem 1rem; background: white; border-radius: var(--radius-lg); border: 1px solid var(--border);">
+        <div style="font-size: 3rem; margin-bottom: 0.75rem;">📬</div>
+        <h3 style="font-size: 1.35rem; color: #064E3B; margin-bottom: 0.5rem;">No received requests yet</h3>
+        <p style="color: var(--text-muted); font-size: 0.92rem;">
+          When other users express interest in exchanging or receiving your items, their requests will appear here.
+        </p>
+      </div>
+    </div>
+
+    <!-- TAB 3: Sent Requests -->
+    <div class="tab-pane" th:classappend="${activeTab == 'sent' ? 'active' : ''}" id="tab-sent">
+      <div th:if="${not #lists.isEmpty(sentRequests)}" class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Target Garment</th>
+              <th>Owner</th>
+              <th>Type</th>
+              <th>Your Message</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="req : ${sentRequests}">
+              <td>
+                <div style="display: flex; gap: 0.75rem; align-items: center;">
+                  <img th:src="${req.listing.imageUrl}" alt="" style="width: 42px; height: 42px; border-radius: 6px; object-fit: cover;" onerror="this.src='https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=200&auto=format&fit=crop&q=80'">
+                  <div>
+                    <a th:href="@{/listings/{id}(id=${req.listing.id})}" style="font-weight: 600; color: var(--text-main);" th:text="${req.listing.title}">Title</a>
+                    <div style="font-size: 0.78rem; color: var(--text-muted);" th:text="'Sent ' + ${#temporals.format(req.createdAt, 'MMM dd, yyyy')}">Date</div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <strong th:text="${req.owner.name}">Owner Name</strong>
+                <div style="font-size: 0.78rem; color: var(--text-muted);">
+                  <span th:text="'📍 ' + (${req.owner.location != null ? req.owner.location : 'Community'})">📍 Community</span>
+                  <th:block th:if="${(req.status == 'Accepted' or req.status == 'Completed') and req.owner.phone != null}">
+                    <br><span th:text="'📞 ' + ${req.owner.phone}">📞 Phone</span>
+                  </th:block>
+                </div>
+              </td>
+              <td>
+                <span class="badge" th:classappend="${req.requestType == 'Donation' ? 'badge-amber' : 'badge-blue'}" th:text="${req.requestType}">
+                  Type
+                </span>
+              </td>
+              <td style="max-width: 260px;">
+                <p style="font-size: 0.85rem; margin: 0;" th:text="${req.message}">Message</p>
+                <div th:if="${req.status == 'Accepted'}" style="margin-top: 0.35rem; font-size: 0.75rem; color: #047857; font-weight: 600; background: #D1FAE5; padding: 0.25rem 0.5rem; border-radius: 4px;">
+                  🎉 Accepted! Coordinate handover with owner.
+                </div>
+              </td>
+              <td>
+                <span class="badge" th:classappend="${req.status == 'Accepted' ? 'badge-green' : (req.status == 'Completed' ? 'badge-blue' : (req.status == 'Rejected' ? 'badge-red' : 'badge-amber'))}" th:text="${req.status}">
+                  Pending
+                </span>
+              </td>
+              <td>
+                <form th:if="${req.status == 'Pending'}" th:action="@{/requests/{id}/action(id=${req.id})}" method="POST" onsubmit="return confirm('Cancel this request?');">
+                  <input type="hidden" name="action" value="cancel">
+                  <button type="submit" class="btn btn-outline btn-sm">Cancel</button>
+                </form>
+                <span th:if="${req.status != 'Pending'}" style="font-size: 0.8rem; color: var(--text-muted);">-</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div th:if="${#lists.isEmpty(sentRequests)}" style="text-align: center; padding: 4rem 1rem; background: white; border-radius: var(--radius-lg); border: 1px solid var(--border);">
+        <div style="font-size: 3rem; margin-bottom: 0.75rem;">📤</div>
+        <h3 style="font-size: 1.35rem; color: #064E3B; margin-bottom: 0.5rem;">No outgoing requests</h3>
+        <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 1.5rem;">
+          Browse the community wardrobe to find pre-loved pieces you'd like to exchange or request.
+        </p>
+        <a th:href="@{/listings}" class="btn btn-primary">Browse Wardrobe ➔</a>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<div id="page-scripts"></div>
+
+</body>
+</html>
